@@ -12,10 +12,13 @@ const app = express();
 // Update CORS configuration to allow your frontend origin
 const allowedOrigins = [
   "http://localhost:5173",
-  "http://localhost:4176", // Vite preview server
+  "http://localhost:4176",
+  "http://localhost:5174",   // <-- add this
   "http://localhost:3000",
-  "https://effortless-sable-a8baaa.netlify.app/" // Your Netlify URL
+  "https://effortless-sable-a8baaa.netlify.app" // <-- remove trailing slash
 ];
+
+
 
 app.use(cors({
   origin: function (origin, callback) {
