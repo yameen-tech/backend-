@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const errorHandler = require("./middlewares/errorHandler");
-const path = require('path');
+const path = require("path");
 
 const authRoutes = require("./routes/auth");
 const categoryRoutes = require("./routes/categories");
@@ -9,27 +9,28 @@ const productRoutes = require("./routes/products");
 
 const app = express();
 
-// Update CORS configuration to allow your frontend origin
+// ✅ Allowed production origins
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:4176",
-  "http://localhost:5174",   // <-- add this
-  "http://localhost:3000",
-  "https://effortless-sable-a8baaa.netlify.app" // <-- remove trailing slash
+  "https://effortless-sable-a8baaa.netlify.app" // without trailing slash
 ];
-
-
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, Postman, etc.)
+    // Allow requests with no origin (Postman, curl, etc.)
     if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
+
+    // ✅ Allow any localhost for dev
+    if (origin.startsWith("http://localhost")) {
+      return callback(null, true);
     }
-    return callback(null, true);
+
+    // ✅ Allow only whitelisted production origins
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // ❌ Reject everything else
+    return callback(new Error("The CORS policy for this site does not allow access from the specified Origin."), false);
   },
   credentials: true
 }));
@@ -37,7 +38,7 @@ app.use(cors({
 app.use(express.json());
 
 // Serve static files from uploads directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);
