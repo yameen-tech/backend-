@@ -11,33 +11,33 @@ const app = express();
 
 // ✅ Allowed production origins
 const allowedOrigins = [
-  "https://effortless-sable-a8baaa.netlify.app" // without trailing slash
+  "https://effortless-sable-a8baaa.netlify.app",
+  "https://noorfabrics.co.in" // new origin added
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow requests with no origin (Postman, curl, etc.)
     if (!origin) return callback(null, true);
 
-    // ✅ Allow any localhost for dev
+    // ✅ Allow localhost during dev
     if (origin.startsWith("http://localhost")) {
       return callback(null, true);
     }
 
-    // ✅ Allow only whitelisted production origins
+    // ✅ Allow only whitelisted origins
     if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
 
     // ❌ Reject everything else
-    return callback(new Error("The CORS policy for this site does not allow access from the specified Origin."), false);
+    return callback(new Error("CORS not allowed from this origin"), false);
   },
   credentials: true
 }));
 
 app.use(express.json());
 
-// Serve static files from uploads directory
+// ✅ Serve static images
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Routes
@@ -47,5 +47,9 @@ app.use("/api/products", productRoutes);
 
 // Error handling
 app.use(errorHandler);
+
+
+
+
 
 module.exports = app;
