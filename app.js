@@ -48,8 +48,4 @@ app.use("/api/products", productRoutes);
 // Error handling
 app.use(errorHandler);
 
-
-
-
-
 module.exports = app;
